@@ -1,193 +1,924 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Responsive Search UI with Bootstrap</title>
-  <!-- Bootstrap CSS -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
-  <style>
-    body {
-      background-color: #121212;
-      color: #eaeaea;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 1.5rem;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chatbot RISDA</title>
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css" />
 
-    .search-container {
-      max-width: 600px;
-      width: 100%;
-    }
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            background: #fff;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-    .form-control,
-    .btn {
-      background-color: #242424;
-      color: #eaeaea;
-      border: none;
-      border-radius: 1.5rem;
-    }
-    .form-control:focus {
-      background-color: #343434;
-      color: #fff;
-      box-shadow: 0 0 0 0.2rem #6c757d70;
-    }
+        .search-container {
+            max-width: 600px;
+            width: 100%;
+        }
 
-    .btn {
-      width: 3rem;
-      height: 3rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      font-weight: 700;
-      border-radius: 50%;
-      border: none;
-    }
+        h2 {
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.5rem;
+            /* color: #222; */
+        }
 
-    .btn:hover {
-      background-color: #4a4a4a;
-      color: white;
-    }
+        .input-group {
+            border-radius: 1.5rem;
+            border: 1px solid #ddd;
+            padding: 0.25rem 0.75rem;
+            background: #fff;
+            box-shadow: 0 0 6px rgb(0 0 0 / 0.05);
+        }
 
-    .tools-button {
-      color: #9ca3af;
-      font-weight: 500;
-      cursor: pointer;
-      user-select: none;
-    }
-    .tools-button:hover {
-      color: #ffffff;
-      text-decoration: underline;
-    }
-    .tools-icon {
-      margin-right: 0.25rem;
-    }
+        .input-group .form-control {
+            border: none;
+            border-radius: 1.5rem;
+            padding-left: 0.5rem;
+            font-size: 1rem;
+            outline-offset: 2px;
+        }
 
-    .search-input-wrapper {
-      display: flex;
-      align-items: center;
-      background-color: #242424;
-      border-radius: 1.5rem;
-      padding: 0.25rem 0.5rem;
-      gap: 0.75rem;
-    }
+        .input-group .form-control:focus {
+            box-shadow: none;
+            outline: none;
+        }
 
-    .tools-section {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      white-space: nowrap;
-    }
+        .btn-tool {
+            background: transparent;
+            border: none;
+            color: #444;
+            font-size: 1.1rem;
+            padding: 0 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
 
-    .list-group-item {
-      background-color: transparent;
-      border: none;
-      padding-left: 0;
-      padding-right: 0;
-      color: #c4c4c4;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: color 0.2s ease;
-    }
+        .btn-tool:hover,
+        .btn-tool:focus {
+            color: #000;
+            text-decoration: none;
+            outline: none;
+            box-shadow: none;
+        }
 
-    .list-group-item:hover {
-      color: #ffffff;
-      text-decoration: underline;
-      background-color: transparent;
-    }
+        .btn-submit {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #000;
+            border: none;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.15s ease-in-out;
+        }
 
-    .list-group-item strong {
-      color: #ffffff;
-    }
+        .btn-submit:hover,
+        .btn-submit:focus {
+            background-color: #222;
+            outline: none;
+            box-shadow: none;
+        }
 
-    @media (max-width: 576px) {
-      body {
-        padding: 1rem;
-      }
-      .search-container {
-        max-width: 100%;
-      }
-      .tools-section span {
-        display: none;
-      }
-      .search-input-wrapper {
-        gap: 0.5rem;
-      }
-    }
-  </style>
+        /* Icon placeholders from Bootstrap Icons CDN */
+        .icon {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        .suggestions-wrapper {
+            position: relative;
+            /* Make this the anchor */
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .suggestions-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .suggestions-list {
+            position: absolute;
+            width: 100%;
+            border-radius: 0.75rem;
+            background-color: #f8f9fa;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        /* Default: show below */
+        .suggestions-wrapper.suggest-below .suggestions-list {
+            top: 100%;
+            margin-top: 0.75rem;
+        }
+
+        /* If chatbox exists: show above */
+        .suggestions-wrapper.suggest-above .suggestions-list {
+            bottom: 100%;
+            margin-bottom: 0.75rem;
+        }
+
+
+
+        .suggestion-item {
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+            color: #444;
+            cursor: pointer;
+            transition: background-color 0.15s ease-in-out;
+            user-select: none;
+            word-break: break-word;
+        }
+
+        .suggestion-item strong {
+            font-weight: 600;
+            color: #666;
+        }
+
+        .suggestion-item:not(:last-child) {
+            border-bottom: 1px solid #e1e3e6;
+        }
+
+        .suggestion-item:hover,
+        .suggestion-item:focus {
+            background-color: #e9ecef;
+            outline: none;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            h2 {
+                font-size: 1.25rem;
+            }
+
+            .input-group .form-control {
+                font-size: 0.95rem;
+            }
+
+            .suggestion-item {
+                font-size: 0.85rem;
+            }
+        }
+
+        .search-container {
+            display: flex;
+            flex-direction: column;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            height: 90vh;
+        }
+
+        .chat-box {
+            flex-grow: 1;
+            overflow-y: auto;
+            /* background: #f9f9f9; */
+            padding: 1rem;
+            border-radius: 1rem;
+            border: 1px solid;
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-message {
+            margin-bottom: 1rem;
+            display: flex;
+        }
+
+        .chat-user {
+            justify-content: flex-end;
+        }
+
+        .chat-bot {
+            justify-content: flex-start;
+        }
+
+        .chat-bubble {
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            max-width: 75%;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .chat-user .chat-bubble {
+            background-color: #1976d2;
+            color: #fff;
+            border-top-right-radius: 0;
+            transition: background-color 0.3s;
+        }
+
+        .chat-bot .chat-bubble {
+            background-color: #f1f1f1;
+            color: #333;
+            border-top-left-radius: 0;
+            transition: background-color 0.3s;
+        }
+
+        .btn-submit i {
+            transition: transform 0.2s ease;
+        }
+
+        .btn-submit:hover i {
+            transform: scale(1.2);
+        }
+
+        .input-wrapper {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            padding-top: 0.5rem;
+        }
+
+        .suggestion-item {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+        }
+
+        .suggestion-item:hover,
+        .suggestion-item:focus {
+            background-color: #f0f0f0;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .typing::after {
+            content: '|';
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* Optional enhancements */
+        .chat-box::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-box::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        .chat-box::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
+
+        :root {
+            --bg-light: #ffffff;
+            --bg-dark: #000000;
+            --text-light: #000000;
+            --text-dark: #ffffff;
+            --input-bg-dark: #333;
+            --input-border: #ccccce;
+        }
+
+        body.light-mode {
+            background-color: var(--bg-light);
+            color: var(--text-light);
+        }
+
+        body {
+            transition: background 0.8s ease-in-out, color 0.4s ease;
+            background: linear-gradient(135deg, #f0f0f0, #ffffff);
+            color: #000000;
+        }
+
+        .dark-mode {
+            background: linear-gradient(135deg, #1e1e1e, #2e2e2e);
+            color: #ffffff;
+        }
+
+        body {
+            transition: background 0.4s ease-in-out, color 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .light-mode {
+            background: #ffffff;
+            color: #111;
+        }
+
+        .dark-mode {
+            background: #121212;
+            color: #eee;
+        }
+
+        /* Overlay for rotation animation */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, #000 30%, transparent 70%);
+            transform: rotate(0deg) scale(0);
+            transform-origin: center;
+            transition: transform 0.8s ease-in-out;
+            z-index: 999;
+            pointer-events: none;
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+
+        /* Trigger clockwise spin on theme toggle */
+        body.dark-mode::before {
+            background: radial-gradient(circle at center, #fff 30%, transparent 70%);
+            transform: rotate(360deg) scale(1.5);
+        }
+
+        .light-mode {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        #themeToggle {
+            transition: transform 0.3s ease;
+        }
+
+        #themeToggle:active {
+            transform: rotate(360deg);
+        }
+
+        body.dark-mode {
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
+        }
+
+        .search-input-wrapper {
+            display: flex;
+            align-items: center;
+            background-color: #ffffff;
+            border-radius: 1.5rem;
+            padding: 0.25rem 0.5rem;
+            gap: 0.75rem;
+            border: 1px solid var(--input-border);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        body.dark-mode .search-input-wrapper {
+            background-color: var(--input-bg-dark);
+            border: 1px solid #555;
+        }
+
+        .chat-container {
+            max-width: 600px;
+        }
+
+        .chat-bubble {
+            padding: 0.75rem 1rem;
+            border-radius: 20px;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+            max-width: 80%;
+        }
+
+        .user-message {
+            background-color: #0d6efd;
+            color: white;
+            align-self: flex-end;
+            text-align: right;
+        }
+
+        .bot-message {
+            background-color: #f1f1f1;
+            color: #000;
+            text-align: left;
+        }
+    </style>
 </head>
+
 <body>
-  <div class="search-container">
-    <div class="text-center mb-4 fs-5 fw-normal">What can I help with?</div>
-    <form class="d-flex align-items-center gap-2 mb-3" role="search" onsubmit="event.preventDefault();">
-      <div class="search-input-wrapper flex-grow-1">
-        <button type="button" class="btn p-0" aria-label="Add new item" title="Add">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            fill="currentColor"
-            class="bi bi-plus"
-            viewBox="0 0 16 16"
-            aria-hidden="true"
-          >
-            <path d="M8 7v6h1V7h6V6H9V0H8v6H2v1h6z" />
-          </svg>
-        </button>
-        <input
-          type="text"
-          class="form-control border-0"
-          placeholder="Ask your question"
-          aria-label="Search"
-          autocomplete="off"
-          autofocus
-        />
-        <div class="tools-section tools-button" tabindex="0" role="button" aria-label="Toggle tools">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            fill="currentColor"
-            class="bi bi-sliders"
-            viewBox="0 0 16 16"
-            aria-hidden="true"
-          >
-            <path fill-rule="evenodd" d="M11.5 2a.5.5 0 0 1 .5.5v1.086a1.5 1.5 0 1 1-1 0V2.5a.5.5 0 0 1 .5-.5zm-7 4a.5.5 0 0 0-.5.5v1.086a1.5 1.5 0 1 0 1 0V6.5a.5.5 0 0 0-.5-.5zm7.5 4a.5.5 0 0 1-.5.5H9v.5a1.5 1.5 0 1 1-1 0v-.5H5.5a.5.5 0 0 1 0-1H11a.5.5 0 0 1 .5.5zm-8-6a.5.5 0 0 1 .5.5v.086a1.5 1.5 0 1 1-1 0V5.5a.5.5 0 0 1 .5-.5z"/>
-          </svg>
-          <span>Tools</span>
+    <div class="search-container">
+
+        <div class="d-flex justify-content-end align-items-center gap-2 my-3">
+            <button id="langToggle" class="btn btn-sm btn-outline-primary">BM</button>
+            <button id="themeToggle" class="btn btn-sm btn-outline-dark">🌙</button>
         </div>
-        <button type="submit" class="btn btn-white" aria-label="Submit search">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            fill="currentColor"
-            class="bi bi-arrow-up"
-            viewBox="0 0 16 16"
-            aria-hidden="true"
-          >
-            <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V3.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4-4 4a.5.5 0 0 0 .708.708L7.5 3.707V11.5a.5.5 0 0 0 .5.5z"/>
-          </svg>
-        </button>
-      </div>
-    </form>
-    <ul class="list-group">
-      <li class="list-group-item">Berapa <strong>lembaga pendidikan tinggi terbaik</strong> di dunia saat ini?</li>
-      <li class="list-group-item">Berapa <strong>lagu terbaik sepanjang masa</strong> berdasarkan daftar billboard?</li>
-      <li class="list-group-item">Berapa <strong>lama waktu yang dibutuhkan</strong> untuk perjalanan dari sini ke jakarta?</li>
-      <li class="list-group-item">Berapa <strong>lagunya yang paling populer</strong></li>
-    </ul>
-  </div>
+        <h2 id="titleText" class="d-block">Tanya RISDA – Kami sedia membantu!</h2>
+        <div id="chatBox" class="chat-box mt-4 d-none">
+            <!-- Chat messages will go here -->
+        </div>
+        <form id="searchForm" class="d-flex align-items-center input-group" autocomplete="off" role="search"
+            aria-label="Search form">
+            <div class="suggestions-wrapper">
+                <div class="d-flex">
+                    <input id="searchInput" type="text" class="form-control ps-3"
+                        placeholder="Contoh: Apa itu program Tanam Semula RISDA?" aria-label="Search input"
+                        name="query" />
 
-  <!-- Bootstrap JS Bundle -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+                    <button type="button" class="btn-submit ms-2" aria-label="Submit search" title="Submit search">
+                        <i class="fa-solid fa-circle-arrow-up"></i>
+                    </button>
+                </div>
+
+                <div id="suggestions" class="suggestions-list" role="list" aria-label="Search suggestions">
+                    <!-- Suggestions here -->
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS Bundle CDN (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+
+    <script>
+        const chatContainer = document.getElementById('chatContainer');
+        const chatBox = document.getElementById("chatBox");
+        const userInput = document.getElementById('userInput');
+        const submitBtn = document.querySelector('.btn-submit');
+        const langToggle = document.getElementById('langToggle');
+        const themeToggle = document.getElementById('themeToggle');
+        const titleText = document.getElementById('titleText');
+        const searchInput = document.getElementById("searchInput");
+        const suggestionsBox = document.getElementById("suggestions");
+        const wrapper = document.querySelector('.suggestions-wrapper');
+
+        let currentLang = 'bm';
+        let isDark = false;
+
+        const translations = {
+            title: {
+                bm: 'Ada soalan tentang Tanam Semula?',
+                en: 'Any questions about Replanting Assistance?'
+            },
+            placeholder: {
+                bm: 'Contoh: Apa itu program Tanam Semula RISDA?',
+                en: 'Example: What is the RISDA Replanting Program?'
+            },
+            noSuggestion: {
+                bm: 'Tiada cadangan ditemui',
+                en: 'No suggestions found'
+            },
+            notFound: {
+                bm: 'Maaf saya tiada jawapan untuk itu.',
+                en: "Sorry, I don't have answer for that."
+            }
+        };
+
+        const data = [
+            {
+                soalan: {
+                    bm: "Apa itu program Tanam Semula RISDA?",
+                    en: "What is the RISDA Replanting Program?"
+                },
+                jawapan: {
+                    bm: "Bantuan untuk tukar pokok getah atau sawit lama kepada pokok baru.",
+                    en: "Assistance to replace old rubber or palm trees with new ones."
+                }
+            },
+            {
+                soalan: {
+                    bm: "Apa RISDA?",
+                    en: "What is RISDA?"
+                },
+                jawapan: {
+                    bm: "Bantuan untuk tukar pokok getah atau sawit lama kepada pokok baru.",
+                    en: "Assistance to replace old rubber or palm trees with new ones."
+                }
+            },
+            {
+                soalan: {
+                    bm: "Siapa boleh mohon?",
+                    en: "Who can apply?"
+                },
+                jawapan: {
+                    bm: "Pekebun kecil yang ada tanah sendiri, maksimum 6.5 hektar.",
+                    en: "Smallholders who own their land, up to 6.5 hectares."
+                }
+            },
+            {
+                soalan: {
+                    bm: "Tanah sewa boleh mohon tak?",
+                    en: "Can I apply if I rent the land?"
+                },
+                jawapan: {
+                    bm: "Tak boleh. Mesti tanah milik sendiri atau milik waris.",
+                    en: "No. The land must be owned by yourself or inherited."
+                }
+            },
+            {
+                soalan: {
+                    bm: "Umur pokok mesti berapa untuk mohon?",
+                    en: "How old must the trees be to apply?"
+                },
+                jawapan: {
+                    bm: "Lebih 20 tahun atau pokok dah tak hasil.",
+                    en: "More than 20 years old or no longer producing."
+                }
+            },
+            {
+                soalan: {
+                    bm: "Apa dokumen kena sediakan?",
+                    en: "What documents are required?"
+                },
+                jawapan: {
+                    bm: "Kad pengenalan (salinan)\nGeran tanah\nGambar tapak kebun\nBorang pemohonan",
+                    en: "Copy of ID card\nLand grant\nPhoto of the plantation site\nApplication form"
+                }
+            },
+            {
+                soalan: {
+                    bm: "Berapa bantuan yang dapat?",
+                    en: "How much assistance will I receive?"
+                },
+                jawapan: {
+                    bm: "Lebih kurang RM7,000 – RM9,000 sehektar (ikut jenis tanaman).",
+                    en: "Around RM7,000 – RM9,000 per hectare (depending on crop type)."
+                }
+            },
+            {
+                soalan: {
+                    bm: "Macam mana nak mohon?",
+                    en: "How to apply?"
+                },
+                jawapan: {
+                    bm: "Datang ke Pejabat RISDA terdekat atau tanya pegawai kawasan.",
+                    en: "Visit the nearest RISDA office or speak with the area officer."
+                }
+            },
+            {
+                soalan: {
+                    bm: "Lepas mohon, siapa pantau?",
+                    en: "Who monitors after application?"
+                },
+                jawapan: {
+                    bm: "Pegawai RISDA akan datang tengok dan bantu sampai siap tanam.",
+                    en: "RISDA officers will visit and assist until planting is completed."
+                }
+            },
+            {
+                soalan: {
+                    bm: "Berapa luas tanah minimum boleh mohon?",
+                    en: "What is the minimum land size to apply?"
+                },
+                jawapan: {
+                    bm: "Sekurang-kurangnya 0.1 hektar.",
+                    en: "At least 0.1 hectares."
+                }
+            },
+            {
+                soalan: {
+                    bm: "Tanah yang kurang 0.1 hektar?",
+                    en: "What if the land is less than 0.1 hectares?"
+                },
+                jawapan: {
+                    bm: "Boleh, tapi semua tuan tanah kena bagi kebenaran bertulis.",
+                    en: "Possible, but all landowners must give written consent."
+                }
+            },
+            {
+                soalan: {
+                    bm: "Kena bayar apa-apa tak bila mohon?",
+                    en: "Is there any fee to apply?"
+                },
+                jawapan: {
+                    bm: "Tak perlu bayar. Permohonan adalah percuma.",
+                    en: "No fee. Application is free."
+                }
+            },
+            {
+                soalan: {
+                    bm: "Lepas lulus, bila bantuan mula dapat?",
+                    en: "After approval, when does the assistance begin?"
+                },
+                jawapan: {
+                    bm: "Biasanya bantuan diberi secara berperingkat ikut fasa kerja (contoh: tebang, tanam, jaga).",
+                    en: "Usually given in stages according to work phases (e.g., clearing, planting, maintenance)."
+                }
+            },
+            {
+                soalan: {
+                    bm: "Boleh tanam pokok lain selain getah/sawit?",
+                    en: "Can I plant other crops besides rubber/palm?"
+                },
+                jawapan: {
+                    bm: "Biasanya fokus pada getah & sawit, tapi boleh tanya RISDA kawasan untuk cadangan tanaman selingan.",
+                    en: "Focus is usually on rubber and palm, but ask your local RISDA office for alternative suggestions."
+                }
+            },
+            {
+                soalan: {
+                    bm: "Kalau dah pernah mohon dulu, boleh mohon lagi tak?",
+                    en: "If I applied before, can I apply again?"
+                },
+                jawapan: {
+                    bm: "Boleh, asalkan tanah lain atau kitaran tanam semula yang baru.",
+                    en: "Yes, if it's for different land or a new planting cycle."
+                }
+            },
+            {
+                soalan: {
+                    bm: "Berapa lama tempoh siap projek tanam semula?",
+                    en: "How long does the replanting project take?"
+                },
+                jawapan: {
+                    bm: "Sekitar 2 – 3 tahun sehingga pokok mula hasil dan penjagaan selesai.",
+                    en: "Around 2–3 years until trees start producing and maintenance is complete."
+                }
+            },
+            {
+                soalan: {
+                    bm: "Ada latihan untuk peserta?",
+                    en: "Is there training for participants?"
+                },
+                jawapan: {
+                    bm: "Ya, RISDA ada bagi kursus dan latihan cara tanam dan jaga pokok.",
+                    en: "Yes, RISDA provides courses and training on planting and caring for the trees."
+                }
+            },
+            {
+                soalan: {
+                    bm: "Kalau pokok mati lepas tanam, macam mana?",
+                    en: "What if the trees die after planting?"
+                },
+                jawapan: {
+                    bm: "RISDA akan bantu pantau, dan peserta kena ikut panduan penjagaan. Kadang bantuan susulan diberi ikut kes.",
+                    en: "RISDA will monitor and help. Participants must follow care guidelines. In some cases, follow-up assistance may be provided."
+                }
+            },
+            {
+                soalan: {
+                    bm: "Boleh mohon atas nama suami/isteri?",
+                    en: "Can I apply under my spouse's name?"
+                },
+                jawapan: {
+                    bm: "Boleh, tapi kena ada bukti milikan bersama atau surat kebenaran.",
+                    en: "Yes, but you need proof of joint ownership or a permission letter."
+                }
+            }
+        ];
+
+        let fuse;
+
+        function initFuse(data) {
+            const fuseOptions = {
+                keys: [`soalan.${currentLang}`],
+                threshold: 0.7,
+            };
+            console.log("Fuse language key:", fuseOptions.keys[0]);
+            fuse = new Fuse(data, fuseOptions);
+        }
+
+        langToggle.addEventListener('click', () => {
+            currentLang = currentLang === 'bm' ? 'en' : 'bm';
+            langToggle.innerText = currentLang === 'bm' ? 'BM' : 'EN';
+            titleText.innerText = translations.title[currentLang];
+            searchInput.placeholder = translations.placeholder[currentLang];
+            initFuse(data);
+        });
+
+        themeToggle.addEventListener('click', () => {
+            isDark = !isDark;
+            document.body.classList.toggle('dark-mode', isDark);
+            document.body.classList.toggle('light-mode', !isDark);
+            themeToggle.innerText = isDark ? '☀️' : '🌙';
+        });
+
+        initFuse(data);
+
+        function addChatMessage(sender, message) {
+            chatBox.classList.remove("d-none");
+            // titleText.classList.add("d-none");
+            wrapper.classList.add('suggest-above');
+            wrapper.classList.remove('suggest-below');
+            const messageDiv = document.createElement("div");
+            messageDiv.className = `chat-message chat-${sender} fade-in`;
+
+            const bubble = document.createElement("div");
+            bubble.className = "chat-bubble";
+
+            if (sender === "bot") {
+                bubble.classList.add("typing");
+                messageDiv.appendChild(bubble);
+                chatBox.appendChild(messageDiv);
+
+                let index = 0;
+                const typeInterval = setInterval(() => {
+                    bubble.textContent += message.charAt(index);
+                    index++;
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                    if (index >= message.length) {
+                        clearInterval(typeInterval);
+                        bubble.classList.remove("typing");
+                    }
+                }, 45);
+            } else {
+                bubble.textContent = message;
+                messageDiv.appendChild(bubble);
+                chatBox.appendChild(messageDiv);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        }
+
+        function handleSubmit() {
+            const question = searchInput.value.trim();
+            if (!question) return;
+
+            if (chatBox.style.display === 'none') {
+                chatBox.style.display = 'block';
+            }
+
+            addChatMessage("user", question);
+
+            const lowerQ = question.toLowerCase();
+
+            const thankYouKeywords = [
+                // English
+                "thank you",
+                "thanks",
+                "thank",
+                "thankyou",
+                "thank u",
+                "thx",
+                "tq",
+                "ty",
+                "tysm",
+                "thankful",
+                "much appreciated",
+                "grateful",
+                "cheers",
+                "done",
+                "complete",
+                "okay good",
+                "good",
+                "great",
+                "that's all",
+                "that is all",
+                "that all",
+                "thats all",
+                "no more",
+                "i'm good",
+                "im good",
+                "i am good",
+                "all good",
+
+                // Malay
+                "terima kasih",
+                "terimakasih",
+                "terima kaseh",
+                "tenkiu",
+                "tqvm",
+                "banyak terima kasih",
+                "syukur",
+                "alhamdulillah",
+                "siap",
+                "sudah",
+                "selesai",
+                "itu sahaja",
+                "itu saja",
+                "habis",
+                "cukup",
+                "baiklah",
+                "okay baik",
+                "ok baik",
+                "okey",
+                "okey baik",
+                "setel",
+                "settle",
+                "dah cukup",
+                "semua ok",
+                "semua okey"
+            ];
+
+            const isThankYou = thankYouKeywords.some((kw) => lowerQ.includes(kw));
+
+            if (isThankYou) {
+                setTimeout(() => {
+                    addChatMessage("bot", currentLang === 'bm' ? "Sama-sama! 😊" : "You're welcome! 😊");
+                }, 500);
+                searchInput.value = '';
+                return;
+            }
+
+            // Fuzzy search
+            const result = fuse.search(question);
+            const match = result.length > 0 ? result[0].item : null;
+
+            const reply = match ? match.jawapan[currentLang] : translations.notFound[currentLang];
+
+            setTimeout(() => {
+                addChatMessage("bot", reply);
+            }, 500);
+
+            searchInput.value = '';
+        }
+
+        // Bind event: button click
+        submitBtn.addEventListener('click', handleSubmit);
+
+        // Bind event: press Enter
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleSubmit();
+            }
+        });
+
+        searchInput.addEventListener("input", () => {
+            const query = searchInput.value.toLowerCase().trim();
+            suggestionsBox.innerHTML = "";
+
+            if (query === "") {
+                suggestionsBox.style.display = "none";
+                return;
+            }
+
+            const matches = data
+                .filter(d => {
+                    const question = d.soalan[currentLang].toLowerCase();
+                    const isExcluded = (
+                        d.soalan.bm === "Apa RISDA?" && d.soalan.en === "What is RISDA?"
+                    );
+                    return !isExcluded && question.includes(query);
+                })
+                .sort((a, b) => {
+                    const aText = a.soalan[currentLang].toLowerCase();
+                    const bText = b.soalan[currentLang].toLowerCase();
+                    const aStarts = aText.startsWith(query) ? 0 : 1;
+                    const bStarts = bText.startsWith(query) ? 0 : 1;
+                    return aStarts - bStarts;
+                })
+                .slice(0, 7); // Limit to top 7
+
+            if (matches.length === 0) {
+                // suggestionsBox.innerHTML = `<div class="suggestion-item" tabindex="0">${translations.noSuggestion[currentLang]}</div>`;
+            } else {
+                matches.forEach(match => {
+                    const div = document.createElement("div");
+                    div.className = "suggestion-item";
+                    div.tabIndex = 0;
+                    div.setAttribute("role", "listitem");
+                    div.textContent = match.soalan[currentLang];
+                    div.addEventListener("click", () => {
+                        searchInput.value = "";
+                        suggestionsBox.style.display = "none";
+
+                        console.log("match soalan");
+                        console.log(match.soalan[currentLang]);
+                        console.log("match");
+                        console.log(match.jawapan[currentLang]);
+                        addChatMessage("user", match.soalan[currentLang]);
+                        setTimeout(() => {
+                            addChatMessage("bot", match.jawapan[currentLang]);
+                        }, 500);
+
+                    });
+                    suggestionsBox.appendChild(div);
+                });
+            }
+            suggestionsBox.style.display = "block";
+        });
+    </script>
+
 </body>
-</html>
 
+</html>
