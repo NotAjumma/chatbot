@@ -1048,13 +1048,15 @@ https://pekebunkecil.risda.gov.my
             }
         });
 
-        searchInput.addEventListener("input", () => {
+        function updateSuggestions() {
             const query = searchInput.value.toLowerCase().trim();
             suggestionsBox.innerHTML = "";
 
             if (query === "") {
-                suggestionsBox.style.display = "none";
-                return;
+                // show top popular/common questions instead
+                const matches = data
+                    .filter(d => d.soalan[currentLang]) // skip invalid
+                    .slice(0, 7);
             }
 
             const matches = data
@@ -1075,6 +1077,7 @@ https://pekebunkecil.risda.gov.my
                 .slice(0, 7); // Limit to top 7
 
             if (matches.length === 0) {
+                // Optionally display "no suggestion"
                 // suggestionsBox.innerHTML = `<div class="suggestion-item" tabindex="0">${translations.noSuggestion[currentLang]}</div>`;
             } else {
                 matches.forEach(match => {
@@ -1095,13 +1098,17 @@ https://pekebunkecil.risda.gov.my
                         setTimeout(() => {
                             addChatMessage("bot", match.jawapan[currentLang]);
                         }, 500);
-
                     });
                     suggestionsBox.appendChild(div);
                 });
             }
+
             suggestionsBox.style.display = "block";
-        });
+        }
+
+        searchInput.addEventListener("input", updateSuggestions);
+        searchInput.addEventListener("focus", updateSuggestions); // Show on click/focus
+
     </script>
 
 </body>
